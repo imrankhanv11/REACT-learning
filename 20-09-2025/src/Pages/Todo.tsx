@@ -6,21 +6,17 @@ import TodoItem from "../Components/TodoLists";
 import TodoCounter from "../Components/TodoCounter";
 import TodoForm from "../Components/TodoForm";
 import { toast } from "react-toastify";
+import { type Todo } from "../types/todo";
 
-export type Todo = {
-    id: number,
-    todo: string,
-    isCompleted: boolean
-}
 
-const Todo: React.FC = () => {
+const Todos: React.FC = () => {
 
     const [todos, setTodo] = UseLocalStorage<Todo[]>("todo", []);
 
     // Add todo
-    const addTodo = useCallback((value: string) => {
+    const addTodo = useCallback((todo: string, description: string) => {
         const newTodo: Todo = {
-            id: Date.now(), todo: value, isCompleted: false
+            id: Date.now(), todo: todo, description:description, isCompleted: false
         }
         setTodo(prev => [...prev, newTodo]);
 
@@ -62,4 +58,4 @@ const Todo: React.FC = () => {
     )
 }
 
-export default Todo;
+export default Todos;

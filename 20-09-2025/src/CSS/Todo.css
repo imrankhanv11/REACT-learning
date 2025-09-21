@@ -1,0 +1,46 @@
+.container-md {
+  max-width: 650px;
+}
+
+.counters .counter-box {
+  width: 30%;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+.counters .counter-box:hover {
+  transform: translateY(-3px);
+}
+
+ul.container {
+  padding-left: 0;
+}
+
+.list-group-item {
+  border-radius: 8px;
+  background: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+  background-color: #e9ecef;
+}
+
+.form-check-input {
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+.btn-danger {
+  transition: all 0.2s ease;
+}
+.btn-danger:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+.container-own{
+    display:  flex;
+    flex-direction: row;
+    max-width: 1000px;
+}

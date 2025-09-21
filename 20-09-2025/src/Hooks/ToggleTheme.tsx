@@ -9,7 +9,6 @@ const ToggleTheme: React.FC = () => {
         setTheme(theme === "light" ? "dark" : "light");
     };
 
-
     return (
         <div
             style={{

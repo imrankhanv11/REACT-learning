@@ -48,6 +48,17 @@ const Manager: React.FC = () => {
     // Entrolment Date
     const [enrolmentDateRange, setEnrokmentDate] = useState<Date[]>([]);
 
+    // check student Email exits
+    const checkEmailExits = useCallback((email: string) => {
+        const emailExists = students.some(student => student.email === email);
+
+        if (emailExists) {
+           return true;
+        }else{
+            return true;
+        }
+
+    }, [students]);
 
     // addStudent
     const addNewStudent = useCallback((items: StudentType) => {
@@ -112,12 +123,14 @@ const Manager: React.FC = () => {
                         setEnrolmentDate={setEnrokmentDate}
                         enrolmentDateRange={enrolmentDateRange}
                     />} />
-                    
+
                 <Route path="/studentform"
                     element={<StudentForm
                         onAddStudent={addNewStudent}
                         updateStudent={updateStudent}
                         editStudentItem={editStudentItem}
+
+                        checkEmailExits={checkEmailExits}
                     />} />
 
                 <Route path="*" element={<NotFoundPage />} />

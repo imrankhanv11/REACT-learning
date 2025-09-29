@@ -1,28 +1,43 @@
-import type { SetStateAction } from "react";
 import type { StudentType } from "../types/studentsTypes";
 import { Button } from "react-bootstrap";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useStudentContext } from "../context/studentContext";
 
 interface StudentListProbs {
     student: StudentType;
-    deleteStudent: (id: number) => void;
-    setEditStudentItem: React.Dispatch<SetStateAction<StudentType | null>>;
 }
 
-const StudentList: React.FC<StudentListProbs> = ({ student, deleteStudent, setEditStudentItem }) => {
+const StudentList: React.FC<StudentListProbs> = ({ student }) => {
 
     const navigater = useNavigate();
+
+    const {setEditStudentItem, deleteStudent} = useStudentContext();
+
+    const handleDownload = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        e.preventDefault();
+        const confirmDownload = window.confirm("Do you want to download this image?");
+        if (confirmDownload) {
+            const link = e.currentTarget;
+            link.click();
+        }
+    };
+
     return (
         <tr>
             <td>{student.id}</td>
-            <td className={`${student.photoUrl? "" : "text-danger"}`}>
+            <td className={`${student.photoUrl ? "" : "text-danger"}`}>
                 {student.photoUrl && student.photoUrl.trim() !== "" ? (
-                    <img
-                        src={student.photoUrl}
-                        alt={`${student.name}'s photo`}
-                        style={{ width: 50, height: 50, objectFit: "cover", borderRadius: "10%" }}
-                    />
+                    <a
+                        href={student.photoUrl}
+                        download={`${student.name}.png`}
+                        onClick={handleDownload}>
+                        <img
+                            src={student.photoUrl}
+                            alt={`${student.name}'s photo`}
+                            style={{ width: 50, height: 50, objectFit: "cover", borderRadius: "10%" }}
+                        />
+                    </a>
                 ) : (
                     "No Photo"
                 )}

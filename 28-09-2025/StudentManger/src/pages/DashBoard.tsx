@@ -1,48 +1,29 @@
-import React, { type SetStateAction } from "react";
+import React from "react";
 import { Button, Table, Form, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { type StudentType } from "../types/studentsTypes";
 import StudentList from "../components/StudentList";
-import { type searchKeyColumnType } from "./Manager";
 import { ToastContainer } from "react-toastify";
 import DatePicker from "react-datepicker";
 import { useCallback, useMemo } from "react";
+import { useStudentContext } from "../context/studentContext";
 
-interface DashboardProbs {
-    //Student Items
-    students: StudentType[];
-
-    //CRUD
-    deleteStudent: (id: number) => void;
-    setEditStudentItem: React.Dispatch<SetStateAction<StudentType | null>>;
-
-    // Search
-    setSearchKeyColumn: React.Dispatch<SetStateAction<searchKeyColumnType>>;
-    searchKeyColumn: searchKeyColumnType;
-
-    // Sort
-    sortField: keyof StudentType | "";
-    setSortField: React.Dispatch<SetStateAction<keyof StudentType | "">>;
-    sortType: "ASC" | "DESC";
-    setSortType: React.Dispatch<SetStateAction<"ASC" | "DESC">>
-
-    // Dobrange
-    setDobRange: React.Dispatch<SetStateAction<Date[]>>
-    dobRange: Date[];
-
-    // Enrolement Range
-    enrolmentDateRange: Date[];
-    setEnrolmentDate: React.Dispatch<SetStateAction<Date[]>>;
-}
-
-const Dashboard: React.FC<DashboardProbs> = ({
-    students, deleteStudent, setEditStudentItem,
-    setSearchKeyColumn, searchKeyColumn,
-    sortField, setSortField, sortType, setSortType,
-    setDobRange, dobRange,
-    setEnrolmentDate, enrolmentDateRange
-}) => {
+const Dashboard: React.FC = () => {
     const navigater = useNavigate();
+
+    const {
+        students,
+        searchKeyColumn,
+        setSearchKeyColumn,
+        sortField,
+        setSortField,
+        sortType,
+        setSortType,
+        dobRange,
+        setDobRange,
+        enrolmentDateRange,
+        setEnrolmentDate
+    } = useStudentContext();
 
     //Clear search
     const clearSearch = useCallback(() => {
@@ -55,6 +36,8 @@ const Dashboard: React.FC<DashboardProbs> = ({
             age: "",
             id: ""
         })
+        setEnrolmentDate([]);
+        setDobRange([]);
     }, [setSearchKeyColumn]);
 
     //Clear sort
@@ -308,12 +291,7 @@ const Dashboard: React.FC<DashboardProbs> = ({
                             </tr>
                             :
                             enrollmentOfBirthRange.map((student) => (
-                                <StudentList
-                                    key={student.id}
-                                    student={student}
-                                    deleteStudent={deleteStudent}
-                                    setEditStudentItem={setEditStudentItem}
-                                />
+                                <StudentList key={student.id} student={student} />
                             ))
                         }
                     </tbody>

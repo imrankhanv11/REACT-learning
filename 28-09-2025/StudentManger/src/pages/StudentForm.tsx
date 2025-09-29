@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { studentFormSchema } from "../schemas/studentFormSchem";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,22 +7,13 @@ import { Col, Container, Row, Form, Button } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { type StudentType } from "../types/studentsTypes";
 import { useNavigate } from "react-router-dom";
-// import { toast, ToastContainer } from "react-toastify";
-
+import { useStudentContext } from "../context/studentContext";
 
 type StudentFormValues = z.infer<typeof studentFormSchema>;
 
-interface StudentFormProbs {
-    onAddStudent: (item: StudentType) => void;
-    editStudentItem: StudentType | null;
-    updateStudent: (item: StudentType) => void;
-    checkEmailExits: (email: string) => boolean;
-}
+const StudentForm: React.FC  = () => {
 
-const StudentForm: React.FC<StudentFormProbs> = ({
-    onAddStudent, editStudentItem, updateStudent,
-    // checkEmailExits 
-}) => {
+    const {editStudentItem, updateStudent, addStudent } = useStudentContext();
 
     const navigater = useNavigate();
 
@@ -62,7 +53,12 @@ const StudentForm: React.FC<StudentFormProbs> = ({
         const calculation: number = new Date().getFullYear() - date;
 
         setValue("age", calculation)
-    }, [watchOnDOB])
+    }, [watchOnDOB]);
+
+    const onReset = useCallback(()=>{
+        reset(formDefaultValue);
+        setPreview("");
+    },[reset, setPreview]);
 
 
     useEffect(() => {
@@ -123,10 +119,11 @@ const StudentForm: React.FC<StudentFormProbs> = ({
                 enrollmentDate: dataValues.enrollmentDate ? dataValues.enrollmentDate : null
             };
 
-            onAddStudent(newStudent);
+            addStudent(newStudent);
 
         }
         reset(formDefaultValue);
+        localStorage.removeItem("studentFormData");
         setPreview("");
         navigater("/");
 
@@ -142,6 +139,33 @@ const StudentForm: React.FC<StudentFormProbs> = ({
         };
         reader.readAsDataURL(file);
     };
+
+    // // 1. Save form data whenever it changes
+    // useEffect(() => {
+    //     const subscription = watch((value) => {
+    //         localStorage.setItem("studentFormData", JSON.stringify(value));
+    //     });
+    //     return () => subscription.unsubscribe();
+    // }, [watch]);
+
+    // // 2. Restore form data on page load
+    // useEffect(() => {
+    //     const savedData = localStorage.getItem("studentFormData");
+    //     if (savedData) {
+    //         reset(JSON.parse(savedData));
+    //         if (JSON.parse(savedData).photoUrl) {
+    //             setPreview(JSON.parse(savedData).photoUrl);
+    //         }
+    //     }
+    // }, [reset]);
+
+    // const watchAllFields = watch();
+    // const isFormDirty = Object.values(watchAllFields).some(
+    //     (val) => val !== "" && val !== null && val !== undefined
+    // );
+
+    // useUnsavedChangesWarning(isFormDirty);
+
 
     return (
         <>
@@ -382,8 +406,11 @@ const StudentForm: React.FC<StudentFormProbs> = ({
                             </Form.Group>
 
 
-                            <Button type="submit" className="w-100" variant={editStudentItem ? "info" : "success"}>
+                            <Button type="submit" className="w-100 mb-2" variant={editStudentItem ? "info" : "success"}>
                                 {editStudentItem ? "Update" : "Add"}
+                            </Button>
+                            <Button type="button" className="w-100" variant="dark" onClick={()=> onReset()}>
+                                Reset
                             </Button>
 
                         </Form>

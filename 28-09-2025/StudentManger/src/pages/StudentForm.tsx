@@ -64,12 +64,19 @@ const StudentForm: React.FC<StudentFormProbs> = ({ onAddStudent, editStudentItem
     useEffect(() => {
         if (editStudentItem) {
             setValue("name", editStudentItem.name);
-            setValue("email", editStudentItem.email);
-            setValue("enrollmentDate", editStudentItem.enrollmentDate);
+            setValue("email", editStudentItem.email); setValue(
+                "enrollmentDate",
+                editStudentItem.enrollmentDate ? new Date(editStudentItem.enrollmentDate) : null
+            );
             setValue("course", editStudentItem.course);
             setValue("phoneNumber", editStudentItem.phoneNumber);
             setValue("status", editStudentItem.status);
             setValue("age", 6);
+            setValue(
+                "dateOfBirth",
+                editStudentItem.dateOfBirth ? new Date(editStudentItem.dateOfBirth) : null
+            );
+
 
             if (editStudentItem.photoUrl) {
                 setValue("photoUrl", editStudentItem.photoUrl);

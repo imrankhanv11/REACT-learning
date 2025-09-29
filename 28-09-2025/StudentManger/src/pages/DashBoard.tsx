@@ -6,6 +6,7 @@ import StudentList from "../components/StudentList";
 import { type searchKeyColumnType } from "./Manager";
 import { ToastContainer } from "react-toastify";
 import DatePicker from "react-datepicker";
+import { useCallback, useMemo } from "react";
 
 interface DashboardProbs {
     //Student Items
@@ -17,7 +18,6 @@ interface DashboardProbs {
 
     // Search
     setSearchKeyColumn: React.Dispatch<SetStateAction<searchKeyColumnType>>;
-    clearSearch: () => void;
     searchKeyColumn: searchKeyColumnType;
 
     // Sort
@@ -25,25 +25,119 @@ interface DashboardProbs {
     setSortField: React.Dispatch<SetStateAction<keyof StudentType | "">>;
     sortType: "ASC" | "DESC";
     setSortType: React.Dispatch<SetStateAction<"ASC" | "DESC">>
-    clearSoting: () => void;
 
     // Dobrange
     setDobRange: React.Dispatch<SetStateAction<Date[]>>
     dobRange: Date[];
 
     // Enrolement Range
-    enrolmentDate: Date[];
+    enrolmentDateRange: Date[];
     setEnrolmentDate: React.Dispatch<SetStateAction<Date[]>>;
 }
 
 const Dashboard: React.FC<DashboardProbs> = ({
     students, deleteStudent, setEditStudentItem,
-    setSearchKeyColumn, clearSearch, searchKeyColumn,
-    sortField, setSortField, sortType, setSortType, clearSoting,
+    setSearchKeyColumn, searchKeyColumn,
+    sortField, setSortField, sortType, setSortType,
     setDobRange, dobRange,
-    setEnrolmentDate, enrolmentDate
+    setEnrolmentDate, enrolmentDateRange
 }) => {
     const navigater = useNavigate();
+
+    //Clear search
+    const clearSearch = useCallback(() => {
+        setSearchKeyColumn({
+            name: "",
+            email: "",
+            course: "",
+            phoneNumber: "",
+            status: "",
+            age: "",
+            id: ""
+        })
+    }, [setSearchKeyColumn]);
+
+    //Clear sort
+    const clearSoting = useCallback(() => {
+        setSortField("");
+        setSortType("ASC");
+    }, [setSortField, setSortType]);
+
+    //filter
+    const searchItems = useMemo(() => {
+        return students.filter(student => {
+            return (
+                (!searchKeyColumn.name || student.name.toLocaleLowerCase().includes(searchKeyColumn.name.toLocaleLowerCase()))
+                &&
+                (!searchKeyColumn.email || student.email.toLocaleLowerCase().includes(searchKeyColumn.email.toLocaleLowerCase()))
+                &&
+                (!searchKeyColumn.course || student.course.toLocaleLowerCase().includes(searchKeyColumn.course.toLocaleLowerCase()))
+                &&
+                (!searchKeyColumn.phoneNumber || student.phoneNumber.toLocaleLowerCase().includes(searchKeyColumn.phoneNumber.toLocaleLowerCase()))
+                &&
+                (!searchKeyColumn.status || student.status.toLocaleLowerCase().includes(searchKeyColumn.status.toLocaleLowerCase()))
+                &&
+                (!searchKeyColumn.age || student.age.toString().startsWith((searchKeyColumn.age)))
+                &&
+                (!searchKeyColumn.id || student.id.toString().startsWith((searchKeyColumn.id)))
+            )
+        })
+    }, [students, searchKeyColumn]);
+
+    //search with Sorting
+    const finalStudents = useMemo(() => {
+
+        let sortingResult: StudentType[] = searchItems
+
+        if (sortField) {
+            sortingResult = [...sortingResult].sort((a, b) => {
+                const valA = a[sortField];
+                const valB = b[sortField];
+                const factor = sortType === "ASC" ? 1 : -1;
+
+                if (valA instanceof Date && valB instanceof Date) {
+                    return (valA.getTime() - valB.getTime()) * factor;
+                }
+                if (typeof valA === "string" && typeof valB === "string") {
+                    return valA.localeCompare(valB) * factor;
+                }
+                if (typeof valA === "number" && typeof valB === "number") {
+                    return (valA - valB) * factor;
+                }
+                return 0;
+            });
+        }
+
+        return sortingResult;
+    }, [searchItems, sortField, sortField, sortType]);
+
+    const dateOfBirthRange = useMemo(() => {
+        if (!dobRange[0] || !dobRange[1]) return finalStudents;
+
+        const start = new Date(dobRange[0]).getTime();
+        const end = new Date(dobRange[1]).getTime();
+
+        return finalStudents.filter((student) => {
+            if (!student.dateOfBirth) return false;
+            const dob = new Date(student.dateOfBirth).getTime();
+            return dob >= start && dob <= end;
+        });
+    }, [finalStudents, dobRange]);
+
+    const enrollmentOfBirthRange = useMemo(() => {
+        if (!enrolmentDateRange[0] || !enrolmentDateRange[1]) return dateOfBirthRange;
+
+        const start = new Date(enrolmentDateRange[0]).getTime();
+        const end = new Date(enrolmentDateRange[1]).getTime();
+
+        return dateOfBirthRange.filter((student) => {
+            if (!student.enrollmentDate) return false;
+            const enroll = new Date(student.enrollmentDate).getTime();
+            return enroll >= start && enroll <= end;
+        });
+    }, [dateOfBirthRange, enrolmentDateRange]);
+
+
 
     return (
         <div>
@@ -160,8 +254,8 @@ const Dashboard: React.FC<DashboardProbs> = ({
                             <td>
                                 <DatePicker
                                     selectsRange
-                                    startDate={enrolmentDate?.[0]}
-                                    endDate={enrolmentDate?.[1]}
+                                    startDate={enrolmentDateRange?.[0]}
+                                    endDate={enrolmentDateRange?.[1]}
                                     onChange={(dates) => setEnrolmentDate(dates as [Date, Date])}
                                     placeholderText="Select date range"
                                     dateFormat="dd-MM-yyyy"
@@ -208,12 +302,12 @@ const Dashboard: React.FC<DashboardProbs> = ({
                             </td>
                         </tr>
 
-                        {students.length === 0 ?
+                        {enrollmentOfBirthRange.length === 0 ?
                             <tr className="text-center" style={{ height: "100px" }} >
                                 <td colSpan={11} className=" text-danger fw-bolder"><h4>No students found</h4></td>
                             </tr>
                             :
-                            students.map((student) => (
+                            enrollmentOfBirthRange.map((student) => (
                                 <StudentList
                                     key={student.id}
                                     student={student}

@@ -1,7 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Student } from "../../types/studentTypes";
-import { act } from "react";
-import student from "../../pages/student";
 
 interface StudentState {
     list: Student[];

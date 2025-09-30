@@ -1,21 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { studentFormSchema, type studentFormValues } from "../schema/studentFormSchema";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from "react-datepicker";
-import { addStudent } from "../features/students/studentSlice";
-import type { AppDispatch } from "../app/store";
-import { useDispatch } from "react-redux";
+import { addStudent, updateStudent, setEditStudent } from "../features/students/studentSlice";
+import type { AppDispatch, RootState } from "../app/store";
+import { useDispatch, useSelector } from "react-redux";
 import type { Student } from "../types/studentTypes";
+import { useNavigate } from "react-router-dom";
 
 
 const Category: string[] = ["Science", "Maths", "Arts"]
 
 const Student: React.FC = () => {
 
+    const navigate = useNavigate();
+
     const dispatch = useDispatch<AppDispatch>();
+    const editId: number | null = useSelector((s: RootState) => s.students.editId);
+    const students: Student[] = useSelector((s: RootState) => s.students.list);
 
     const [preview, setPreview] = useState<string>("");
 
@@ -51,16 +56,51 @@ const Student: React.FC = () => {
             dob: new Date(),
             image: ""
         }
-    })
+    });
+
+    useEffect(() => {
+        if (!editId) return;
+
+        const item = students.find(s => s.id === editId);
+        if (!item) return;
+
+        reset({
+            name: item.name,
+            email: item.email,
+            category: item.category || [],
+            gender: item.gender,
+            dob: item.dob ? new Date(item.dob) : new Date(),
+            image: item.image || "",
+        });
+
+        setPreview(item.image);
+    }, [editId, students, reset]);
+
+
 
     const onSubmit = (data: studentFormValues) => {
-        console.log(data);
+        if (editId) {
+            const updatedStudent: Student = {
+                id: editId,
+                name: data.name,
+                email: data.email,
+                category: data.category,
+                gender: data.gender,
+                dob: new Date(data.dob).toISOString(),
+                image: data.image || ""
+            };
 
-        const newStudent: Student = {
-            ...data, id: Date.now(), dob: new Date(data.dob).toISOString()
+            dispatch(updateStudent(updatedStudent));
+            dispatch(setEditStudent(null));
+        } else {
+            const newStudent: Student = {
+                ...data,
+                id: Date.now(),
+                dob: new Date(data.dob).toISOString()
+            };
+
+            dispatch(addStudent(newStudent));
         }
-
-        dispatch(addStudent(newStudent));
 
         reset({
             name: "",
@@ -70,9 +110,11 @@ const Student: React.FC = () => {
             dob: new Date(),
             image: ""
         });
-
         setPreview("");
-    }
+
+        navigate("/");
+    };
+
 
     const onReset = () => {
         reset({
@@ -259,8 +301,8 @@ const Student: React.FC = () => {
                                 />
                             </Form.Group>
 
-                            <Button type="submit" className="w-100 mb-2" variant="success">
-                                Add
+                            <Button type="submit" className="w-100 mb-2" variant={editId? "info" : "success"}>
+                                {editId? "Update" : "Add"}
                             </Button>
                             <Button type="button" className="w-100" variant="dark" onClick={() => onReset()}>
                                 Reset

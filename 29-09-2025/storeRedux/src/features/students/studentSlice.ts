@@ -1,9 +1,11 @@
-
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Student } from "../../types/studentTypes";
+import { act } from "react";
+import student from "../../pages/student";
 
 interface StudentState {
     list: Student[];
+    editId: number | null;
 }
 
 const loadFromLocalStorage = (): Student[] => {
@@ -21,6 +23,7 @@ const saveToLocalStorage = (students: Student[]) => {
 
 const initialState: StudentState = {
     list: loadFromLocalStorage(),
+    editId: null
 };
 
 const studentSlice = createSlice({
@@ -34,11 +37,26 @@ const studentSlice = createSlice({
         deleteStudent: (state, action: PayloadAction<number>) => {
             state.list = state.list.filter(s => s.id !== action.payload);
             saveToLocalStorage(state.list);
-        }
+        },
+        setEditStudent: (state, action: PayloadAction<number | null>) => {
+            state.editId = action.payload;
+        },
+        updateStudent: (state, action: PayloadAction<Student>) => {
+            const index = state.list.findIndex(s => s.id === action.payload.id);
+            if (index !== -1) {
+                state.list[index] = action.payload;
+            }
+        },
+        // updateStudent: (state, action: PayloadAction<{ id: number, data: Omit<Student, "id"> }>) => {
+        //     const index = state.list.findIndex(s => s.id === action.payload.id);
+        //     if (index !== -1) {
+        //         state.list[index] = { id: action.payload.id, ...action.payload.data };
+        //     }
+        // }
     }
 });
 
-export const { addStudent, deleteStudent } = studentSlice.actions;
+export const { addStudent, deleteStudent, setEditStudent, updateStudent } = studentSlice.actions;
 export default studentSlice.reducer;
 
 

@@ -3,7 +3,8 @@ import { Image, Button } from "react-bootstrap";
 import type { Student } from "../types/studentTypes";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../app/store";
-import { deleteStudent } from "../features/students/studentSlice";
+import { deleteStudent, setEditStudent } from "../features/students/studentSlice";
+import { useNavigate } from "react-router-dom";
 
 interface StudentRowProbs {
     item: Student
@@ -13,6 +14,7 @@ interface StudentRowProbs {
 const StudentRow: React.FC<StudentRowProbs> = ({ item }) => {
 
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
 
     return (
         <tr key={item.id}>
@@ -32,13 +34,24 @@ const StudentRow: React.FC<StudentRowProbs> = ({ item }) => {
                     />
                 )}
             </td>
-            <td>
+            <td className="d-flex gap-2 justify-content-around">
                 <Button
                     variant="danger"
                     size="sm"
                     onClick={() => dispatch(deleteStudent(item.id))}
                 >
                     Delete
+                </Button>
+
+                <Button
+                    variant="info"
+                    size="sm"
+                    onClick={() => {
+                        dispatch(setEditStudent(item.id));
+                        navigate("/form1");
+                    }}
+                >
+                    Edit
                 </Button>
             </td>
         </tr>

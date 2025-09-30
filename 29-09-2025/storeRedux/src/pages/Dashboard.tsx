@@ -6,6 +6,7 @@ import StudentRow from "../components/studentRow";
 
 const Dashboard: React.FC = () => {
   const students = useSelector((s: RootState) => s.students.list);
+
   
   return (
     <div>

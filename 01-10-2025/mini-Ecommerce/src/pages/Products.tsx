@@ -4,6 +4,7 @@ import type { AppDispatch } from "../store/store";
 import type { RootState } from "../store/store";
 import { fetchProducts } from "../store/slices/productSlice";
 import ProductCard from '../components/Card';
+import { Spinner } from "react-bootstrap";
 
 const Products: React.FC = () => {
 
@@ -16,7 +17,14 @@ const Products: React.FC = () => {
         }
     }, [dispatch, items.length]);
 
-    if (loading) return <p style={{ textAlign: "center" }}>Loading products...</p>;
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "60vh" }}>
+                <Spinner animation="border" />
+            </div>
+        );
+    }
+
     if (error) return <p style={{ textAlign: "center" }}>Error: {error}</p>;
 
     return (

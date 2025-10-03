@@ -37,7 +37,6 @@ const LoginForm: React.FC<LoginrFormProbs> = ({ setShowRegister }) => {
         reset(defaultFormValues);
     }
 
-
     return (
         <>
             <Container className=" mb-3">

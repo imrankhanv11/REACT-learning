@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../store/store";
 import { logoutUser } from "../store/slices/authSlice";
 import { Card, Button } from "react-bootstrap";
 import userLogo from "../assets/User_logo.webp"
+import OrderDetails from "../components/OrderDetails";
+import type { OrderType } from "../types/orderType";
 
 const Profile: React.FC = () => {
-  const user = useSelector((state: RootState) => state.AuthStore.user);
   const dispatch = useDispatch();
+
+  const orders = useSelector((state: RootState) => state.OrderStore.orderList);
+  const user = useSelector((state: RootState)=> state.AuthStore.user);
+
+  const [orderList, setOrderList] = useState<OrderType[]>([]);
+
+  useEffect(()=>{
+    const OrderDetailsItems = orders.find(o=> o.userId === user?.id)?.orders;
+
+    setOrderList(OrderDetailsItems || []);
+  },[user, setOrderList, orders]);
+
 
   if (!user) return null;
 
@@ -30,8 +43,8 @@ const Profile: React.FC = () => {
             <span>{user.id}</span>
           </div>
           <hr />
-          <Button 
-            variant="outline-danger" 
+          <Button
+            variant="outline-danger"
             className="w-100 mt-2"
             onClick={() => dispatch(logoutUser())}
           >
@@ -39,6 +52,10 @@ const Profile: React.FC = () => {
           </Button>
         </Card.Body>
       </Card>
+
+      <div className=" mt-2">
+        <OrderDetails orderList = {orderList}/>
+      </div>
     </div>
   );
 };

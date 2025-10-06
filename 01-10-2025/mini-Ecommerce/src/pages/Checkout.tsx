@@ -9,21 +9,20 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { orderFormSchema, type OrderFormValues } from "../schemas/orderFormSchema";
 import { clearCart } from "../store/slices/cartSlice";
+import { orderItem } from "../store/slices/orderSlice";
+
 
 const Checkout: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
 
-    // ---------------- Redux state ----------------
     const user = useSelector((state: RootState) => state.AuthStore.user);
     const cartList = useSelector((state: RootState) => state.CartStore.cartList);
     const products = useSelector((state: RootState) => state.ProductsStore.items);
     const loading = useSelector((state: RootState) => state.ProductsStore.loading);
 
-    // ---------------- Local state ----------------
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-    // ---------------- Form ----------------
     const defaultFormValues: OrderFormValues = {
         name: "",
         phone: "",
@@ -42,7 +41,34 @@ const Checkout: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
 
     const onSubmit = (data: OrderFormValues) => {
-        console.log("Order placed:", data);
+
+        if (!user?.id) {
+            navigate("/login");
+            return;
+        }
+
+        dispatch(orderItem({
+            userId: user.id,
+            orders: {
+                orderId: Date.now(),
+                name: data.name,
+                address: data.address,
+                date: new Date().toISOString(),
+                orderItems: cartItems
+                    .map((m) => {
+                        const item = products.find((n) => n.id === m.productId);
+                        if (!item) return null;
+                        return {
+                            productId: item.id,
+                            quantity: m.quantity,
+                            total: item.price * m.quantity
+                        };
+                    })
+                    .filter((i): i is NonNullable<typeof i> => i !== null)
+            }
+        }));
+
+
         reset(defaultFormValues);
         setShowModal(true);
     };
@@ -52,9 +78,9 @@ const Checkout: React.FC = () => {
         dispatch(clearCart({
             userId: Number(user?.id)
         }));
+        navigate("/");
     };
 
-    // ---------------- Effects ----------------
     useEffect(() => {
         if (products.length === 0 && !loading) {
             dispatch(fetchProducts());
@@ -66,7 +92,6 @@ const Checkout: React.FC = () => {
         setCartItems(storedCart || []);
     }, [cartList, user]);
 
-    // ---------------- Memo ----------------
     const totalCost = useMemo(() => {
         return cartItems.reduce((sum, item) => {
             const product = products.find(p => p.id === item.productId);
@@ -74,7 +99,6 @@ const Checkout: React.FC = () => {
         }, 0);
     }, [cartItems, products]);
 
-    // ---------------- Conditional rendering ----------------
     if (loading) {
         return (
             <div className="text-center mt-5">
@@ -93,10 +117,8 @@ const Checkout: React.FC = () => {
         );
     }
 
-    // ---------------- Render ----------------
     return (
         <Container className="my-5">
-            {/* Order Summary */}
             <Row className="d-flex justify-content-center align-items-center">
                 <Col md={6}>
                     <Button
@@ -134,7 +156,7 @@ const Checkout: React.FC = () => {
                 size="lg"
             >
                 <Modal.Header closeButton className="bg-success text-white">
-                    <Modal.Title>🎉 Order Placed Successfully!</Modal.Title>
+                    <Modal.Title> Order Placed Successfully!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <h5>Order Summary</h5>

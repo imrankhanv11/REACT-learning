@@ -2,7 +2,7 @@ import type { RootState } from "../store/store";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import LoginForm from "../components/LoginForm";
-import RegisterForm from "../components/registerForm";
+import RegisterForm from "../components/RegisterForm";
 import Profile from "./Profile";
 
 const Login: React.FC = () => {

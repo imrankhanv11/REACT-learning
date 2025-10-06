@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { userCart, CartItem } from "../../types/cartType";
 
-// Load from localStorage
 const loadFromLocalStorage = (): userCart[] => {
     try {
         const data = localStorage.getItem("cart");
@@ -11,7 +10,6 @@ const loadFromLocalStorage = (): userCart[] => {
     }
 };
 
-// Save to localStorage
 const saveToLocalStorage = (cartState: userCart[]) => {
     localStorage.setItem("cart", JSON.stringify(cartState));
 };

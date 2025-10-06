@@ -1,19 +1,44 @@
 import React from "react";
-import { Card } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../store/store";
+import { addToCart } from "../store/slices/cartSlice";
 import { type Product } from "../types/productType";
 
 interface ProductCardProps {
     product: Product;
-};
+}
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+    const user = useSelector((state: RootState) => state.AuthStore.user);
+    const cartList = useSelector((state: RootState) => state.CartStore.cartList);
+
+    const isInCart = !!cartList
+        .find((c) => c.userId === user?.id)
+        ?.cart.find((ci) => ci.productId === product.id);
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.stopPropagation(); 
+        if (!user) {
+            navigate("/login")
+            return;
+        }
+        if (!isInCart) {
+            dispatch(
+                addToCart({
+                    userId: user.id,
+                    item: { productId: product.id, quantity: 1 },
+                })
+            );
+        }
+    };
 
     const handleClick = () => {
         navigate(`/products/${product.id}`);
-    }
+    };
 
     return (
         <Card
@@ -43,13 +68,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     </p>
                     <div className="d-flex justify-content-between mt-2">
                         <Card.Text>
-                            <strong className=" text-success">${product.price}</strong>
+                            <strong className="text-success">${product.price}</strong>
                         </Card.Text>
                         <Card.Text>
                             ⭐ {product.rating} / 5
                         </Card.Text>
                     </div>
                 </div>
+
+                <Button
+                    variant={isInCart ? "success" : "primary"}
+                    onClick={handleAddToCart}
+                    disabled={isInCart}
+                    className="mt-2"
+                >
+                    {isInCart ? "Added in Cart" : "Add to Cart"}
+                </Button>
             </Card.Body>
         </Card>
     );

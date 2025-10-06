@@ -6,6 +6,7 @@ import { Button, Col, Row, Form, Container } from "react-bootstrap";
 import { registerUser } from "../store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../store/store";
+import { useNavigate } from "react-router-dom";
 
 interface RegisterFormProbs {
     setShowRegister: React.Dispatch<SetStateAction<boolean>>;
@@ -14,6 +15,8 @@ interface RegisterFormProbs {
 const RegisterForm: React.FC<RegisterFormProbs> = ({ setShowRegister }) => {
 
     const dispatch = useDispatch<AppDispatch>();
+
+    const navigate = useNavigate();
 
     const defaultFormValues = {
         name: "",
@@ -37,6 +40,8 @@ const RegisterForm: React.FC<RegisterFormProbs> = ({ setShowRegister }) => {
         dispatch(registerUser(data));
 
         reset(defaultFormValues);
+
+        navigate("/");
     }
 
     return (

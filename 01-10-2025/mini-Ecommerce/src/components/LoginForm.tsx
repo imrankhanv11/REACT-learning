@@ -6,6 +6,7 @@ import { Button, Col, Row, Form, Container } from "react-bootstrap";
 import { type AppDispatch } from "../store/store";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 interface LoginrFormProbs {
     setShowRegister: React.Dispatch<SetStateAction<boolean>>;
@@ -14,6 +15,7 @@ interface LoginrFormProbs {
 const LoginForm: React.FC<LoginrFormProbs> = ({ setShowRegister }) => {
 
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
 
 
     const defaultFormValues = {
@@ -35,6 +37,8 @@ const LoginForm: React.FC<LoginrFormProbs> = ({ setShowRegister }) => {
         dispatch(loginUser(data));
 
         reset(defaultFormValues);
+        navigate("/");
+        
     }
 
     return (

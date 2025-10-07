@@ -5,13 +5,13 @@
 }
 
 body {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
+  /* background-color: var(--bs-body-bg);
+  color: var(--bs-body-color); */
   padding-top: 65px;
   transition: background-color 0.3s, color 0.3s;
 }
 
-:root {
+/* :root {
   --bs-body-bg: #ffffff;
   --bs-body-color: #212529;
 }
@@ -19,4 +19,4 @@ body {
 [data-bs-theme="dark"] {
   --bs-body-bg: #121212;
   --bs-body-color: #f8f9fa;
-}
+} */

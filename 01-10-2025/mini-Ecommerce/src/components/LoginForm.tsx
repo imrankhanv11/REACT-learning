@@ -7,6 +7,7 @@ import { type AppDispatch } from "../store/store";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer,toast } from "react-toastify";
 
 interface LoginrFormProbs {
     setShowRegister: React.Dispatch<SetStateAction<boolean>>;
@@ -32,13 +33,17 @@ const LoginForm: React.FC<LoginrFormProbs> = ({ setShowRegister }) => {
     })
 
     const onSubmit = (data: loginFormValues) => {
-        console.log(data);
 
-        dispatch(loginUser(data));
+        const result = dispatch(loginUser(data));
+
+        if (!result.payload) {
+            toast.error("Invalid password or email");
+            return;
+        }
 
         reset(defaultFormValues);
         navigate("/");
-        
+
     }
 
     return (
@@ -97,6 +102,7 @@ const LoginForm: React.FC<LoginrFormProbs> = ({ setShowRegister }) => {
                         </Form>
                     </Col>
                 </Row>
+                <ToastContainer position="top-right" autoClose={2000} />
             </Container>
         </>
     )

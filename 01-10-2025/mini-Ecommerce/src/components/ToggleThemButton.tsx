@@ -6,7 +6,7 @@ const ThemeToggle: React.FC = () => {
     const { theme, toggleTheme } = useContext(ThemeContext);
 
     return (
-        <Button variant={theme === "dark" ? "light" : "dark"} onClick={toggleTheme}>
+        <Button variant={theme === "dark" ? "light" : "dark"} onClick={toggleTheme} className="btn-sm">
             {theme === "dark" ? "Light Mode" : "Dark Mode"}
         </Button>
     );

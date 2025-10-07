@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useCallback } from "react";
+import React, { useMemo, useEffect, useCallback, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "../store/store";
 import { Button, Row, Container, Spinner } from "react-bootstrap";
@@ -15,6 +15,7 @@ const Cart: React.FC = () => {
     const loading = useSelector((state: RootState) => state.ProductsStore.loading);
 
     const navigate = useNavigate();
+
 
     useEffect(() => {
         if (products.length === 0 && !loading) {
@@ -108,7 +109,7 @@ const Cart: React.FC = () => {
                         })}
                     </Row>
 
-                    <div className="mt-4 d-flex justify-content-between border p-2 rounded-3 bg-light shadow">
+                    <div className="mt-4 d-flex justify-content-between border p-2 rounded-3 bg-body shadow">
                         <h4>Total: ${totalCost.toFixed(2)}</h4>
                         <Button variant="success" onClick={() => navigate("/checkout")}>Buy Now</Button>
                     </div>

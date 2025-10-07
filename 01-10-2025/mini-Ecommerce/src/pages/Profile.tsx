@@ -26,7 +26,7 @@ const Profile: React.FC = () => {
 
   return (
     <div className="container mt-4">
-      <Card className="shadow-sm border-0" style={{ maxWidth: "500px", margin: "0 auto" }}>
+      <Card className="shadow-sm border-2 bg-body " style={{ maxWidth: "500px", margin: "0 auto" }}>
         <div className="text-center mt-3">
           <img
             src={userLogo}

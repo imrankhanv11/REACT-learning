@@ -218,7 +218,7 @@ const Checkout: React.FC = () => {
                     <Col md={6}>
                         <Card className="p-4 shadow-lg rounded">
                             <h2 className="text-center text-info mb-3">Shipping Details</h2>
-                            <Form noValidate onSubmit={handleSubmit(onSubmit)} className="p-3 shadow-sm rounded bg-light">
+                            <Form noValidate onSubmit={handleSubmit(onSubmit)} className="p-3 shadow-sm rounded bg-body">
                                 {/* Name */}
                                 <Form.Group className="mb-3">
                                     <Form.Label>

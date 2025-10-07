@@ -32,8 +32,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    document.body.className = theme === "dark" ? "bg-dark text-white" : "bg-light text-dark";
-
     document.documentElement.setAttribute("data-bs-theme", theme);
   }, [theme]);
 

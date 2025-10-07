@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { BsArrowRightCircle } from "react-icons/bs";
 import type { OrderType } from "../types/orderType";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
+import { ThemeContext } from "../context/themContext";
 
 interface OrderDetailsProps {
   orderList: OrderType[];
@@ -13,6 +14,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderList }) => {
   const [selectedOrder, setSelectedOrder] = useState<OrderType | null>(null);
 
   const products = useSelector((state: RootState) => state.ProductsStore.items);
+
+    const {theme } = useContext(ThemeContext);
 
   const getProductName = (productId: number) => {
     const product = products.find(p => p.id === productId);
@@ -41,7 +44,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderList }) => {
           <div
             key={order.orderId}
             onClick={() => setSelectedOrder(order)}
-            className="d-flex align-items-center justify-content-between border rounded-3 p-3 mb-3 bg-light shadow-sm hover-shadow-sm"
+            className="d-flex align-items-center justify-content-between border rounded-3 p-3 mb-3 bg-body shadow-sm hover-shadow-sm"
             style={{
               cursor: "pointer",
               transition: "all 0.3s ease",
@@ -70,7 +73,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderList }) => {
               </div>
               <BsArrowRightCircle
                 size={30}
-                color="black"
+                color={theme === "dark"? "white" : "black"}
                 className="me-2"
                 style={{ flexShrink: 0 }}
               />

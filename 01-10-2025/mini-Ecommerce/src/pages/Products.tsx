@@ -54,7 +54,7 @@ const Products: React.FC = () => {
 
     return (
         <Container className="my-4"><Row
-            className="justify-content-center mb-4 g-2 p-3 rounded shadow-sm bg-light border"
+            className="justify-content-center mb-4 g-2 p-3 rounded shadow-sm bg-body border"
             style={{ borderColor: "#0d6efd" }}
         >
             <Col xs={12} md={3}>

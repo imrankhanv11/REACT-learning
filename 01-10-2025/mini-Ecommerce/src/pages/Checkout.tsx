@@ -33,10 +33,32 @@ const Checkout: React.FC = () => {
         zip: ""
     };
 
-    const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<OrderFormValues>({
-        resolver: zodResolver(orderFormSchema),
-        defaultValues: defaultFormValues
-    });
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setValue,
+        formState: { errors,
+            isDirty
+        } }
+        = useForm<OrderFormValues>({
+            resolver: zodResolver(orderFormSchema),
+            defaultValues: defaultFormValues
+        });
+
+    // Prevent Form dirty
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (isDirty) {
+                e.preventDefault();
+                e.returnValue = "";
+            }
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    }, [isDirty]);
+
 
     const [showModal, setShowModal] = useState(false);
 
@@ -72,7 +94,10 @@ const Checkout: React.FC = () => {
             address: data.address,
             city: data.city,
             state: data.state,
-            zip: data.zip
+            zip: data.zip,
+            name: data.name,
+            email: data.email,
+            phone: data.phone
         }));
 
         reset(defaultFormValues);
@@ -317,6 +342,9 @@ const Checkout: React.FC = () => {
                                             setValue("city", saved.city);
                                             setValue("state", saved.state);
                                             setValue("zip", saved.zip);
+                                            setValue("email", saved.email);
+                                            setValue("name", saved.name);
+                                            setValue("phone",saved.phone)
                                         }}
                                     >
                                         Use Saved Address

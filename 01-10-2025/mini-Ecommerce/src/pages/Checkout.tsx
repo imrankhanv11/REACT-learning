@@ -33,7 +33,7 @@ const Checkout: React.FC = () => {
         zip: ""
     };
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<OrderFormValues>({
+    const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<OrderFormValues>({
         resolver: zodResolver(orderFormSchema),
         defaultValues: defaultFormValues
     });
@@ -68,6 +68,12 @@ const Checkout: React.FC = () => {
             }
         }));
 
+        localStorage.setItem("userAddress", JSON.stringify({
+            address: data.address,
+            city: data.city,
+            state: data.state,
+            zip: data.zip
+        }));
 
         reset(defaultFormValues);
         setShowModal(true);
@@ -187,30 +193,142 @@ const Checkout: React.FC = () => {
                     <Col md={6}>
                         <Card className="p-4 shadow-lg rounded">
                             <h2 className="text-center text-info mb-3">Shipping Details</h2>
-                            <Form noValidate onSubmit={handleSubmit(onSubmit)}>
-                                {["name", "phone", "email", "address", "city", "state", "zip"].map((field) => (
-                                    <Form.Group className="mb-3" key={field}>
-                                        <Form.Label>
-                                            {field.charAt(0).toUpperCase() + field.slice(1)} <small className="text-danger">*</small>
-                                        </Form.Label>
-                                        <Form.Control
-                                            type={field === "email" ? "email" : "text"}
-                                            as={field === "address" ? "textarea" : undefined}
-                                            rows={field === "address" ? 3 : undefined}
-                                            placeholder={`Enter ${field}`}
-                                            {...register(field as keyof OrderFormValues)}
-                                            isInvalid={!!errors[field as keyof OrderFormValues]}
-                                        />
-                                        <Form.Control.Feedback type="invalid">
-                                            {errors[field as keyof OrderFormValues]?.message}
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
-                                ))}
+                            <Form noValidate onSubmit={handleSubmit(onSubmit)} className="p-3 shadow-sm rounded bg-light">
+                                {/* Name */}
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        Name <small className="text-danger">*</small>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter name"
+                                        {...register("name")}
+                                        isInvalid={!!errors.name}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.name?.message}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
 
-                                <Button type="submit" className="w-100" variant="success">
+                                {/* Phone */}
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        Phone <small className="text-danger">*</small>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter phone number"
+                                        {...register("phone")}
+                                        isInvalid={!!errors.phone}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.phone?.message}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+
+                                {/* Email */}
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        Email <small className="text-danger">*</small>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="email"
+                                        placeholder="Enter email address"
+                                        {...register("email")}
+                                        isInvalid={!!errors.email}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.email?.message}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+
+                                {/* Address */}
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        Address <small className="text-danger">*</small>
+                                    </Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        placeholder="Enter address"
+                                        {...register("address")}
+                                        isInvalid={!!errors.address}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.address?.message}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+
+                                {/* City */}
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        City <small className="text-danger">*</small>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter city"
+                                        {...register("city")}
+                                        isInvalid={!!errors.city}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.city?.message}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+
+                                {/* State */}
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        State <small className="text-danger">*</small>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter state"
+                                        {...register("state")}
+                                        isInvalid={!!errors.state}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.state?.message}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+
+                                {/* Zip */}
+                                <Form.Group className="mb-3">
+                                    <Form.Label>
+                                        Zip Code <small className="text-danger">*</small>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter zip code"
+                                        {...register("zip")}
+                                        isInvalid={!!errors.zip}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.zip?.message}
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                                {localStorage.getItem("userAddress") && (
+                                    <Button
+                                        variant="outline-primary"
+                                        size="sm"
+                                        className="mb-3"
+                                        onClick={() => {
+                                            const saved = JSON.parse(localStorage.getItem("userAddress")!);
+                                            setValue("address", saved.address);
+                                            setValue("city", saved.city);
+                                            setValue("state", saved.state);
+                                            setValue("zip", saved.zip);
+                                        }}
+                                    >
+                                        Use Saved Address
+                                    </Button>
+                                )}
+
+
+                                <Button type="submit" className="w-100 fw-semibold" variant="success">
                                     Place Order
                                 </Button>
                             </Form>
+
                         </Card>
                     </Col>
                 </Row>

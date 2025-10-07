@@ -27,7 +27,7 @@ const NavBar: React.FC = () => {
                         height="35"
                         className="me-2"
                     />
-                    <span className="fw-bold text-teal">Easy_Buy</span>
+                    <span className="fw-bold text-white">Easy_Buy^</span>
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

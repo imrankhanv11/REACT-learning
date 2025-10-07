@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { BsArrowRightCircle } from "react-icons/bs";
 import type { OrderType } from "../types/orderType";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
 
 interface OrderDetailsProps {
   orderList: OrderType[];
@@ -9,6 +11,13 @@ interface OrderDetailsProps {
 
 const OrderDetails: React.FC<OrderDetailsProps> = ({ orderList }) => {
   const [selectedOrder, setSelectedOrder] = useState<OrderType | null>(null);
+
+  const products = useSelector((state: RootState) => state.ProductsStore.items);
+
+  const getProductName = (productId: number) => {
+    const product = products.find(p => p.id === productId);
+    return product ? product.title : "Unknown Product";
+  };
 
   if (!orderList || orderList.length === 0) {
     return (
@@ -39,17 +48,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderList }) => {
               borderLeft: "6px solid #0d6efd",
             }}
           >
-            {/* Left Arrow Icon */}
             <div className="d-flex align-items-center gap-3">
-              <BsArrowRightCircle
-                size={30}
-                color="#0d6efd"
-                className="me-2"
-                style={{ flexShrink: 0 }}
-              />
-
               <div>
-                <h6 className="mb-1 text-primary fw-bold">
+                <h6 className="mb-1 text-success fw-bold">
                   Order #{order.orderId}
                 </h6>
                 <small className="text-muted">
@@ -58,19 +59,27 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderList }) => {
               </div>
             </div>
 
-            <div className="text-end">
-              <span className="fw-bold text-success fs-5">
-                ₹{totalAmount.toFixed(2)}
-              </span>
-              <div className="text-muted" style={{ fontSize: "0.85rem" }}>
-                Tap for details
+            <div className="text-end d-flex gap-4">
+              <div>
+                <span className="fw-bold text-success fs-5">
+                  ₹{totalAmount.toFixed(2)}
+                </span>
+                <div className="text-muted" style={{ fontSize: "0.85rem" }}>
+                  Tap for details
+                </div>
               </div>
+              <BsArrowRightCircle
+                size={30}
+                color="black"
+                className="me-2"
+                style={{ flexShrink: 0 }}
+              />
             </div>
+
           </div>
         );
       })}
 
-      {/* Order Details Modal */}
       <Modal show={!!selectedOrder} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title className="fw-bold text-primary">
@@ -93,7 +102,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderList }) => {
                 </p>
               </div>
               <hr />
-              <h6 className="fw-bold mb-2">🛍️ Items:</h6>
+              <h6 className="fw-bold mb-2"> Items:</h6>
               <div className="d-flex flex-column gap-2">
                 {selectedOrder.orderItems.map((item, index) => (
                   <div
@@ -101,7 +110,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderList }) => {
                     className="d-flex justify-content-between align-items-center border-bottom pb-2"
                   >
                     <span>
-                      <strong>Product:</strong> #{item.productId}
+                      <strong>Product: </strong>{getProductName(item.productId)}
                     </span>
                     <span className="text-end">
                       x{item.quantity} ={" "}

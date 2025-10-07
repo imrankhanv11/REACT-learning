@@ -8,6 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 const ProductDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+
+    const productId = Number(id);
+
+    if (isNaN(productId)) {
+        return <div className="text-center p-4 text-danger">Invalid Product ID</div>;
+    }
+
     const navigate = useNavigate();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState<boolean>(true);

@@ -34,7 +34,8 @@ const mainPersistsReducer = persistReducer(
     {
         key: "root",
         storage,
-        blacklist: ["ProductsStore"]
+        blacklist: ["ProductsStore"],
+        whitelist: ["AuthStore","CartStore","OrderStore"],
     },
     rootReducer
 );

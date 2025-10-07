@@ -1,25 +1,25 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { userCart, CartItem } from "../../types/cartType";
 
-const loadFromLocalStorage = (): userCart[] => {
-    try {
-        const data = localStorage.getItem("cart");
-        return data ? JSON.parse(data) : [];
-    } catch {
-        return [];
-    }
-};
+// const loadFromLocalStorage = (): userCart[] => {
+//     try {
+//         const data = localStorage.getItem("cart");
+//         return data ? JSON.parse(data) : [];
+//     } catch {
+//         return [];
+//     }
+// };
 
-const saveToLocalStorage = (cartState: userCart[]) => {
-    localStorage.setItem("cart", JSON.stringify(cartState));
-};
+// const saveToLocalStorage = (cartState: userCart[]) => {
+//     localStorage.setItem("cart", JSON.stringify(cartState));
+// };
 
 type CartState = {
     cartList: userCart[];
 };
 
 const initialState: CartState = {
-    cartList: loadFromLocalStorage(),
+    cartList: [],
 };
 
 const cartSlice = createSlice({
@@ -45,7 +45,7 @@ const cartSlice = createSlice({
                 userCart.cart.push(action.payload.item);
             }
 
-            saveToLocalStorage(state.cartList);
+            // saveToLocalStorage(state.cartList);
         },
 
         updateQuantity: (
@@ -57,7 +57,7 @@ const cartSlice = createSlice({
                 const item = userCart.cart.find(ci => ci.productId === action.payload.productId);
                 if (item) item.quantity = action.payload.quantity;
             }
-            saveToLocalStorage(state.cartList);
+            // saveToLocalStorage(state.cartList);
         },
 
         removeFromCart: (
@@ -68,7 +68,7 @@ const cartSlice = createSlice({
             if (userCart) {
                 userCart.cart = userCart.cart.filter(ci => ci.productId !== action.payload.productId);
             }
-            saveToLocalStorage(state.cartList);
+            // saveToLocalStorage(state.cartList);
         },
 
         clearCart: (state, action: PayloadAction<{ userId: number }>) => {
@@ -76,7 +76,7 @@ const cartSlice = createSlice({
             if (userCart) {
                 userCart.cart = [];
             }
-            saveToLocalStorage(state.cartList);
+            // saveToLocalStorage(state.cartList);
         },
     },
 });

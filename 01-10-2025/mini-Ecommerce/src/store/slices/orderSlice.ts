@@ -1,27 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { OrderType, OrderUserType } from "../../types/orderType";
 
-// --- Local Storage Helpers ---
-const loadFromLocalStorage = (): OrderUserType[] => {
-    try {
-        const data = localStorage.getItem("orders");
-        return data ? JSON.parse(data) : [];
-    } catch {
-        return [];
-    }
-};
-
-const saveToLocalStorage = (orders: OrderUserType[]) => {
-    localStorage.setItem("orders", JSON.stringify(orders));
-};
-
-// --- Redux State ---
 type OrderState = {
     orderList: OrderUserType[];
 };
 
 const initialState: OrderState = {
-    orderList: loadFromLocalStorage(),
+    orderList: [],
 };
 
 // --- Slice ---
@@ -38,13 +23,10 @@ const orderSlice = createSlice({
             }
 
             userOrder.orders.push(action.payload.orders);
-
-            saveToLocalStorage(state.orderList);
         },
 
     },
 });
 
-// --- Exports ---
 export const { orderItem } = orderSlice.actions;
 export default orderSlice.reducer;

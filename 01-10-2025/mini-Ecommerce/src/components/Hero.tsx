@@ -13,6 +13,7 @@ const Hero: React.FC = () => {
                 textAlign: "center",
                 padding: "80px 20px",
             }}
+            className=" border-bottom"
         >
             <h1 className="fw-bold mb-3">Welcome to Our Online Store</h1>
             <p className="lead">

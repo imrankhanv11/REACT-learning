@@ -28,9 +28,15 @@ const NavBarLayout: React.FC = () => {
                         </Nav.Link>
                         {isAuthenticated ?
                             role === "User" ?
-                                <Nav.Link as={Link} to="/dashboard" className="mx-2">
-                                    Dashboard
-                                </Nav.Link> :
+                                <>
+                                    <Nav.Link as={Link} to="/cart" className="mx-2">
+                                        Cart
+                                    </Nav.Link>
+                                    <Nav.Link as={Link} to="/dashboard" className="mx-2">
+                                        Dashboard
+                                    </Nav.Link>
+                                </>
+                                :
                                 <Nav.Link as={Link} to="/admin/dashboard" className="mx-2">
                                     Admin Dashboard
                                 </Nav.Link>

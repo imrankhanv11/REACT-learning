@@ -1,5 +1,7 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 import { publicEndpoints } from "./enpoints";
+import { appStore } from "../store/app";
+import { logout } from "../store/slices/authSlice";
 
 const api = axios.create({
     baseURL: "https://localhost:7263/api",
@@ -72,6 +74,7 @@ api.interceptors.response.use(
                 console.error("Refresh token failed:", err);
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
+                appStore.dispatch(logout());
                 window.location.href = "/login";
                 return Promise.reject(err);
             }

@@ -1,5 +1,11 @@
 import { Card, Button } from "react-bootstrap";
 import type { ProductType } from "../types/productType";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispath } from "../store/app";
+import { addToCart } from "../store/slices/cartSlice";
+import type { RootState } from "../store/app";
+import { useNavigate } from "react-router-dom";
 
 type ProductCardProps = {
     product: ProductType;
@@ -7,7 +13,36 @@ type ProductCardProps = {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
 
-    
+    const navigate = useNavigate();
+    const isAuthenticated  = useSelector((state: RootState)=> state.AuthStore.isAuthenticated);
+
+    const dispatch = useDispatch<AppDispath>();
+    const role = useSelector((state: RootState) => state.AuthStore.userDetails?.role);
+
+    const addtoCartMethod = async (productId: number) => {
+
+        if (!isAuthenticated) {
+            toast.info("Please login first");
+            navigate("/login");
+            return;
+        }
+
+        const values = {
+            productId: productId,
+            quantity: 1
+        }
+
+        try {
+            const response = await dispatch(addToCart(values)).unwrap();
+
+            if (response.productId === productId) {
+                toast.success("Cart Added Succesfully");
+            }
+        }
+        catch (err: any) {
+            toast.error(err || "Network Error Try Again");
+        }
+    }
 
     return (
         <Card
@@ -44,13 +79,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </Card.Body>
 
             <Card.Footer className="text-center bg-white border-0">
-                <Button
+                {role !== "Admin" ? <Button
                     variant="success"
                     disabled={product.stock <= 0}
                     style={{ borderRadius: "8px" }}
+                    onClick={() => addtoCartMethod(product.productId)}
                 >
                     Add to Cart
-                </Button>
+                </Button> :
+                    ""}
             </Card.Footer>
         </Card>
     );

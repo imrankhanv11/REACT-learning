@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Container, Row, Col, Spinner, Alert } from "react-bootstrap";
 import { type AppDispath, type RootState } from "../store/app";
-import { fetchAllProducts } from "../store/slices/productSlices";
+import { fetchAllProducts, clearError } from "../store/slices/productSlices";
 import { ProductCard } from "../components/ProductCard";
+import { ToastContainer } from "react-toastify";
 
 const Products: React.FC = () => {
   const { items, loading, error } = useSelector((state: RootState) => state.ProductStore);
@@ -14,6 +15,10 @@ const Products: React.FC = () => {
       dispatch(fetchAllProducts());
     }
   }, [items.length, dispatch]);
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
 
   if (loading) {
     return (
@@ -34,6 +39,7 @@ const Products: React.FC = () => {
   return (
     <Container className="my-4">
       <h3 className="text-center fw-bold mb-4">🛍️ Our Products</h3>
+      <ToastContainer position="top-right" autoClose={2000} />
 
       {items.length > 0 ? (
         <Row className="g-5">

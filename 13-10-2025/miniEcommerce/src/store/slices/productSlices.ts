@@ -2,19 +2,19 @@ import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/tool
 import api from "../../api/api";
 import type { ProductType } from "../../types/productType";
 import { handleApiError } from "../../errorHandlers/apiErrorHandlers";
-import { privateEndpoints, publicEndpoints } from "../../api/enpoints";
+import { privateEndpoints } from "../../api/enpoints";
 import type { productAddType } from "../../types/productAddType";
+import { addNewProductsMethod, getAllProducts } from "../../api/apiService";
 
 export const fetchAllProducts = createAsyncThunk(
     "products/fetchAllProducts",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await api.get(publicEndpoints.FETCH_ALL_PRODUCTS);
-            return response.data;
+            const response = await getAllProducts();
+            return response;
         }
         catch (error: any) {
-            const handlerError = handleApiError(error);
-            return rejectWithValue(handlerError.message);
+            return rejectWithValue(error.message);
         }
     }
 );
@@ -23,21 +23,20 @@ export const addNewProducts = createAsyncThunk(
     "products/addNewProducts",
     async (data: productAddType, { rejectWithValue }) => {
         try {
-            const response = await api.post(privateEndpoints.ADD_NEW_PRODUCT, data);
-            return response.data.product;
+            const response = await addNewProductsMethod(data);
+            return response;
         }
         catch (error: any) {
-            const handlerError = handleApiError(error);
-            return rejectWithValue(handlerError.message);
+            return rejectWithValue(error.message);
         }
     }
 )
 
+// ---
 export const updateQuantity = createAsyncThunk(
     "products/updateQuantityProduct",
     async ({ id, quantity }: { id: number; quantity: number }, { rejectWithValue }) => {
         try {
-            // Send `Qunatity` to match the DTO
             await api.patch(privateEndpoints.UPDATE_PROUDCT_QUANTITY(id), { Qunatity: quantity });
             return { id, quantity };
         } catch (err: any) {
@@ -62,7 +61,11 @@ const initialState: ProductState = {
 const prouducstSlice = createSlice({
     name: "products",
     initialState,
-    reducers: {},
+    reducers: {
+        clearError: (state) => {
+            state.error = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchAllProducts.pending, (state) => {
@@ -105,3 +108,4 @@ const prouducstSlice = createSlice({
 });
 
 export default prouducstSlice.reducer;
+export const { clearError } = prouducstSlice.actions;

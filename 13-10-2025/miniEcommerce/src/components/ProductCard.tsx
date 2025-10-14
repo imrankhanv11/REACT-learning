@@ -6,6 +6,7 @@ import type { AppDispath } from "../store/app";
 import { addToCart } from "../store/slices/cartSlice";
 import type { RootState } from "../store/app";
 import { useNavigate } from "react-router-dom";
+import { decreseProductQuantity } from "../store/slices/productSlices";
 
 type ProductCardProps = {
     product: ProductType;
@@ -14,7 +15,7 @@ type ProductCardProps = {
 export const ProductCard = ({ product }: ProductCardProps) => {
 
     const navigate = useNavigate();
-    const isAuthenticated  = useSelector((state: RootState)=> state.AuthStore.isAuthenticated);
+    const isAuthenticated = useSelector((state: RootState) => state.AuthStore.isAuthenticated);
 
     const dispatch = useDispatch<AppDispath>();
     const role = useSelector((state: RootState) => state.AuthStore.userDetails?.role);
@@ -27,14 +28,14 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             return;
         }
 
-        const values = {
-            productId: productId,
-            quantity: 1
-        }
+        // const values = {
+        //     productId: productId,
+        //     quantity: 1
+        // }
 
         try {
-            const response = await dispatch(addToCart(values)).unwrap();
-
+            const response = await dispatch(addToCart({ productId: productId, quantity: 1 })).unwrap();
+            dispatch(decreseProductQuantity({ id: productId }))
             if (response.productId === productId) {
                 toast.success("Cart Added Succesfully");
             }

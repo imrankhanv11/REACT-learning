@@ -41,11 +41,25 @@ export const getAllCartsFetch = createAsyncThunk(
 // Add item to cart
 export const addToCart = createAsyncThunk(
     "carts/addToCart",
-    async ({ productId, quantity }: { productId: number, quantity: number }, { rejectWithValue }) => {
+    async ({  productId, quantity }: { productId: number, quantity: number }, { rejectWithValue }) => {
         try {
             const response = await api.post(privateEndpoints.ADD_NEW_CART_PRODUCT, { productId, quantity });
             return response.data;
         } catch (err: any) {
+            const handler = handleApiError(err);
+            return rejectWithValue(handler);
+        }
+    }
+)
+
+
+export const removeCart = createAsyncThunk(
+    "cart/removeCart", async({cartItemId, quantity, productId} : {cartItemId: number, quantity: number, productId: number}, {rejectWithValue})=>{
+        try{
+            await api.delete(privateEndpoints.REMOVE_CART,  {data: {cartItemId, quantity, productId}});
+            return {cartItemId, quantity, productId};
+        }
+        catch(err: any){
             const handler = handleApiError(err);
             return rejectWithValue(handler);
         }
@@ -104,7 +118,12 @@ const cartSlice = createSlice({
             .addCase(addToCart.rejected, (state, action: PayloadAction<any>) => {
                 state.error = action.payload;
                 state.loading = false;
-            });
+            })
+
+            builder
+            .addCase(removeCart.fulfilled, (state, action: PayloadAction<{cartItemId: number, quantity: number, productId: number}>)=>{
+                state.cartItems.result = state.cartItems.result.filter(s=> s.cartItemId !== action.payload.cartItemId);
+            })
     }
 });
 

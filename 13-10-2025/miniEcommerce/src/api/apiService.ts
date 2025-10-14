@@ -2,6 +2,7 @@ import { handleApiError } from "../errorHandlers/apiErrorHandlers";
 import api from "./api"
 import { publicEndpoints, privateEndpoints } from "./enpoints"
 import { type productAddType } from "../types/productAddType";
+// import { type removerCartType } from "../types/removeCartType";
 
 // Get All Products
 export const getAllProducts = async () => {
@@ -28,3 +29,5 @@ export const addNewProductsMethod = async (data: productAddType) => {
         throw new Error(handlerError.message);
     }
 }
+
+// Remove Cart Item

@@ -64,6 +64,18 @@ const prouducstSlice = createSlice({
     reducers: {
         clearError: (state) => {
             state.error = null;
+        },
+        increaseProductQuantity: (state, action: PayloadAction<{ id: number, quanitity: number }>) => {
+            const exiting = state.items.find(s => s.productId === action.payload.id);
+            if (exiting) {
+                exiting.stock += action.payload.quanitity;
+            }
+        },
+        decreseProductQuantity: (state, action: PayloadAction<{ id: number }>) => {
+            const existingItem = state.items.find(s => s.productId === action.payload.id);
+            if (existingItem) {
+                existingItem.stock -= 1;
+            }
         }
     },
     extraReducers: (builder) => {
@@ -108,4 +120,4 @@ const prouducstSlice = createSlice({
 });
 
 export default prouducstSlice.reducer;
-export const { clearError } = prouducstSlice.actions;
+export const { clearError, increaseProductQuantity, decreseProductQuantity } = prouducstSlice.actions;

@@ -1,0 +1,149 @@
+$primary: #4009f5;
+$secondary: #264453;
+$success: #08f30c;
+$info: #0a8f75;
+$warning: #ff9800;
+$danger: #f44336;
+$light: #f8f9fa;
+$dark: #212121;
+
+$font-family-sans-serif: 'Poppins', 'Segoe UI', Roboto, sans-serif;
+$body-bg: #f5f7fa;
+$body-color: #333;
+
+$border-radius: 0.75rem;
+$btn-border-radius: 0.75rem;
+$input-border-radius: 0.5rem;
+
+@import "bootstrap/scss/bootstrap";
+
+
+body {
+    background-color: $body-bg;
+    color: $body-color;
+    font-family: $font-family-sans-serif;
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-weight: 600;
+    color: $dark;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: $border-radius;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.12);
+    }
+}
+
+/* Buttons - Custom Variants */
+.btn-primary {
+    background-color: $primary !important;
+    border-color: $primary !important;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: darken($primary, 8%) !important;
+        border-color: darken($primary, 8%) !important;
+        transform: translateY(-1px);
+    }
+}
+
+.btn-success {
+    background-color: $success !important;
+    border-color: $success !important;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: darken($success, 8%) !important;
+        border-color: darken($success, 8%) !important;
+        transform: translateY(-1px);
+    }
+}
+
+.btn-info {
+    background-color: $info !important;
+    border-color: $info !important;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: darken($info, 8%) !important;
+        border-color: darken($info, 8%) !important;
+        transform: translateY(-1px);
+    }
+}
+
+.btn-danger {
+    background-color: $danger !important;
+    border-color: $danger !important;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: darken($danger, 8%) !important;
+        border-color: darken($danger, 8%) !important;
+        transform: translateY(-1px);
+    }
+}
+
+.btn-dark {
+    background-color: $dark !important;
+    border-color: $dark !important;
+    color: #fff !important;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: lighten($dark, 8%) !important;
+        border-color: lighten($dark, 8%) !important;
+        transform: translateY(-1px);
+    }
+}
+
+
+/* Utility Classes */
+.shadow-soft {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Text utilities */
+.text-secondary {
+    color: $secondary !important;
+}
+
+.text-dark {
+    color: $dark !important;
+}
+
+.text-light {
+    color: $light !important;
+}
+
+/* Background utilities */
+.bg-success {
+    background-color: $success !important;
+    color: #fff !important;
+}
+
+.bg-info {
+    background-color: $info !important;
+    color: #fff !important;
+}
+
+.bg-danger {
+    background-color: $danger !important;
+    color: #fff !important;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
+}

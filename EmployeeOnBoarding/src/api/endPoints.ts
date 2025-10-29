@@ -1,7 +1,22 @@
-export const endPoints = {
-    GET_DEPARTMENT  : `/Department/department`,
-    GET_LOCATIONS   : `/Department/location`,
-    GET_ROLE        : (id: number) => `/Department/roles/${id}`,
-    ONBOARDEMP      : `/Employee/onboardEmployee`,
-    METALOG         : `/MetaLog/metaLog`
+export const PublicEndPoint = {
+    REGISTER : `/Account/Register`,
+    LOGIN : `/Account/Login`
+}
+
+export const PrivateEndPoints = {
+    // Course
+    ADD_COURSE : `/Course/Add`,
+    GET_COURSE : `/Course/GetCourses`,
+    DELETE_COURSE: (id: number) => `/Course/Delete/${id}`,
+    EDIT_COURSE: `/Course/Edit`,
+
+    // User
+    ADD_User : `/User/Create`,
+    GET_User : `/User/GetUsers`,
+    DELETE_USER : (id: string) => `/User/Delete/${id}`,
+    EDIT_USER : `/User/Edit`,
+
+    // Enroll
+    enrollment : `/Enrollment/Enroll`,
+    GetEnrollment : `/Enrollment/MyEnrollments`
 }
